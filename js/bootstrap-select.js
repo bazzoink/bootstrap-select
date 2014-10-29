@@ -143,7 +143,8 @@
     mobile: false,
     selectOnTab: false,
     dropdownAlignRight: false,
-    searchAccentInsensitive: false
+    searchAccentInsensitive: false,
+    inlineTitle: null,
   };
 
   Selectpicker.prototype = {
@@ -211,6 +212,7 @@
           '<div class="btn-group bootstrap-select' + multiple + inputGroup + '">' +
           '<button type="button" class="btn dropdown-toggle selectpicker' + btnSize + '" data-toggle="dropdown"' + autofocus + '>' +
           '<span class="filter-option pull-left"></span>&nbsp;' +
+          '<span class="caret-inverse"></span>' +
           '<span class="caret"></span>' +
           '</button>' +
           '<div class="dropdown-menu open">' +
@@ -366,17 +368,23 @@
         var $this = $(this);
         var icon = $this.data('icon') && that.options.showIcon ? '<i class="' + that.options.iconBase + ' ' + $this.data('icon') + '"></i> ' : '';
         var subtext;
+        var iTitle;
         if (that.options.showSubtext && $this.attr('data-subtext') && !that.multiple) {
           subtext = ' <small class="muted text-muted">' + $this.data('subtext') + '</small>';
         } else {
           subtext = '';
+        }
+        if (that.options.inlineTitle) {
+          iTitle = ' <span class="select-label">' + that.options.inlineTitle + '</span>';
+        } else {
+          iTitle = '';
         }
         if ($this.data('content') && that.options.showContent) {
           return $this.data('content');
         } else if (typeof $this.attr('title') !== 'undefined') {
           return $this.attr('title');
         } else {
-          return icon + $this.html() + subtext;
+          return icon + iTitle + $this.html() + subtext;
         }
       }).toArray();
 
@@ -1207,3 +1215,4 @@
     })
   });
 })(jQuery);
+
