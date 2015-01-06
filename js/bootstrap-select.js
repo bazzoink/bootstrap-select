@@ -1100,6 +1100,12 @@
     mobile: function () {
       this.$element.addClass('mobile-device').appendTo(this.$newElement);
       if (this.options.container) this.$menu.hide();
+      var that = this;
+      this.$element.on('focus', function() {
+        that.$newElement.addClass('select-open');
+      }).on('blur', function() {
+        that.$newElement.removeClass('select-open');
+      });
     },
 
     refresh: function () {
