@@ -144,7 +144,7 @@
     selectOnTab: false,
     dropdownAlignRight: false,
     searchAccentInsensitive: false,
-    inlineTitle: null,
+    openOnTab: false,
   };
 
   Selectpicker.prototype = {
@@ -177,6 +177,7 @@
 
       this.checkDisabled();
       this.clickListener();
+      if (this.options.openOnTab) this.tabListener();
       if (this.options.liveSearch) this.liveSearchListener();
       this.render();
       this.liHeight();
@@ -368,23 +369,17 @@
         var $this = $(this);
         var icon = $this.data('icon') && that.options.showIcon ? '<i class="' + that.options.iconBase + ' ' + $this.data('icon') + '"></i> ' : '';
         var subtext;
-        var iTitle;
         if (that.options.showSubtext && $this.attr('data-subtext') && !that.multiple) {
           subtext = ' <small class="muted text-muted">' + $this.data('subtext') + '</small>';
         } else {
           subtext = '';
-        }
-        if (that.options.inlineTitle) {
-          iTitle = ' <span class="select-label">' + that.options.inlineTitle + '</span>';
-        } else {
-          iTitle = '';
         }
         if ($this.data('content') && that.options.showContent) {
           return $this.data('content');
         } else if (typeof $this.attr('title') !== 'undefined') {
           return $this.attr('title');
         } else {
-          return icon + iTitle + $this.html() + subtext;
+          return icon + $this.html() + subtext;
         }
       }).toArray();
 
@@ -824,6 +819,38 @@
       });
     },
 
+    tabListener: function () {
+      var that = this,
+          hasTabbed,
+          hasClicked;
+
+      $(document.body).on("keydown", function(e){
+        var isActive = that.$menu.parent().hasClass('open');
+        if (/(^9$)/.test(e.keyCode.toString(10)) && !isActive) {
+          hasTabbed = true;
+        }
+        else {
+          hasTabbed = false;
+        }
+      });
+
+      this.$button.on("mousedown focus", function(e){
+        if (e.type == 'mousedown') {
+          hasClicked = true;
+        }
+
+        if (e.type == 'focus' && hasTabbed && !hasClicked) {
+          setTimeout(function () {
+            that.$button.click();
+          }, 10);
+        }
+
+        hasClicked = false;
+        hasTabbed = false;
+      });
+
+    },
+
     liveSearchListener: function () {
       var that = this,
           no_results = $('<li class="no-results"></li>');
@@ -1221,4 +1248,3 @@
     })
   });
 })(jQuery);
-
